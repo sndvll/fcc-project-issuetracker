@@ -63,7 +63,6 @@ const updateIssue = (req, res) => {
 const deleteIssue = (req, res) => {
   const { _id } = req.body;
   if(_id) {
-    console.log(_id);
     Issue.findByIdAndDelete(_id)
       .then(() => {
         res.json({ message: `deleted ${_id}`})
