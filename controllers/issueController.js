@@ -4,10 +4,12 @@ const getIssues = (req, res) => {
   Issue.find({project: req.params.project}, (err, data) => {
     if(err) console.log(err);
     else res.json(data);
-  })
-    
+    console.log(data);
+  });
 };
-const saveIssue = () => {};
+const saveIssue = (req, res) => {
+  console.log(req.body)
+};
 const updateIssue = () => {};
 const deleteIssue = () => {};
 
