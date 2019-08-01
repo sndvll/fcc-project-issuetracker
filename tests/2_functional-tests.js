@@ -16,80 +16,17 @@ const Project = require('../models/models.js').Project;
 
 chai.use(chaiHttp);
 
-const createTestIssue = (title, done, createdBy) => {
-  const issue = new Issue({
-    title, text: 'test', createdBy: 'tester'
-  });
-  issue.save()
-    .then(res => {
-      console.log(`test issue created: ${res.title}`);
-      if(createdBy) {
-        createdBy(res._id);
-      }
-      done();
-    })
-    .catch(err => {
-      console.log('error', err);
-      done();
-    });
-}
-
-const deleteTestIssue = (filter, done) => {
-  const key = Object.keys(filter)[0];
-  Issue.findOneAndDelete(filter)
-    .then(res => {
-      console.log(`test issue deleted: ${res[key]}`);
-      done();
-    })
-    .catch(err => {
-      console.log('error', err);
-      done();
-    });
-}
-
-const createTestProject = (projectName, done) => {
-  const project = new Project({
-    projectName
-  });
-  project.save()
-    .then(res => {
-      console.log(`test project created: ${res.projectName}`);
-      done();
-    })
-    .catch(err => {
-      console.log('error', err);
-      done();
-    });
-}
-
-const deleteTestProject= (filter, done) => {
-  const key = Object.keys(filter)[0];
-  Project.findOneAndDelete(filter)
-    .then(res => {
-      console.log(`test project deleted: ${res[key]}`);
-      done();
-    })
-    .catch(err => {
-      console.log('error', err);
-      done();
-    });
-}
+let id;
 
 suite('Functional Tests', function() {
   
     suite('POST /api/issues/{project} => object with issue data', function() {
       
-      let issueTitle = `test, ${Date.now()}`;
-      
-      afterEach(done => {
-        deleteTestIssue({ title: issueTitle }, done)
-      });
-      
       test('Every field filled in', function(done) {
        chai.request(server)
         .post('/api/issues/test')
         .send({
-          title: issueTitle,
+          title: 'Title',
           text: 'text',
           createdBy: 'Functional Test - Every field filled in',
           assignedTo: 'Chai and Mocha',
@@ -97,12 +34,15 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res.body.title, issueTitle);
-          assert.equal(res.body.text, 'text');
-          assert.equal(res.body.createdBy, 'Functional Test - Every field filled in');
-          assert.equal(res.body.assignedTo, 'Chai and Mocha');
-          assert.equal(res.body.status, 'In QA');
+          assert.equal(res.body.issue_title, 'Title');
+          assert.equal(res.body.created_by, 'Functional Test - Every field filled in');
+          assert.equal(res.body.assigned_to, 'Chai and Mocha');
+          assert.equal(res.body.status_text, 'In QA');
+          assert.property(res.body, 'created_on');
+          assert.property(res.body, 'updated_on');
           assert.equal(res.body.open, true);
+          assert.property(res.body, '_id');
+          id = res.body._id;
           done();
         });
       });

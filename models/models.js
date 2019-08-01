@@ -15,25 +15,25 @@ const ProjectSchema = new Schema({
 });
 
 const IssueSchema = new Schema({
-  title: {
+  issue_title: {
     type: String, required: true, min: 1, max: 200
   },
-  text: {
-    type: String, required: true, min: 1, max: 200
-  },
-  createdBy: {
+  created_by: {
     type: String, required: true, min: 1, max: 30
   },
-  assignedTo: {
+  assigned_to: {
     type: String, default: '', min: 1, max: 30
   },
-  status: {
+  status_text: {
+    type: String, required: true, min: 1, max: 200
+  },
+  status_text: {
     type: String, default: '', min: 1, max: 30
   },
-  createdOn: {
+  created_on: {
     type: String, default: new Date()
   },
-  updatedOn: {
+  updated_on: {
     type: String, default: new Date()
   },
   open: {
