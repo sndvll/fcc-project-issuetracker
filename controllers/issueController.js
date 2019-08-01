@@ -35,8 +35,28 @@ const saveIssue = (req, res) => {
     res.json({ message: 'missing inputs' });
   });
 };
-const updateIssue = () => {
-  const {id, request} = req.body;
+const updateIssue = (req, res) => {
+  let updatedIssue = {};
+  const { _id } = req.body._id;
+  const fieldsForUpdate = ['issue_title', 'issue_text', 'assigned_to', 'status_text', 'open'];
+  for (let field in req.body) {
+    fieldsForUpdate.forEach(value => {
+      if (value == field) {
+        updatedIssue[field] = req.body[field];
+      }
+    });
+  };
+  updatedIssue.updated_on = new Date();
+  const hasUpdated = Object.keys(updatedIssue).length > 1;
+  
+  if(hasUpdated) {
+    Issue.findByIdAndUpdate(_id, updatedIssue, { new:true })
+      .then(data => {
+        
+      });
+  }
+
+  
 };
 const deleteIssue = () => {};
 
