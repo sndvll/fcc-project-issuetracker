@@ -14,9 +14,11 @@ const ObjectId = require('mongodb').ObjectID;
 
 const CONNECTION_STRING = process.env.DB;
 
+/*
 MongoClient.connect(CONNECTION_STRING, function(err, db) {
   console.log('db connection successful');
-});
+}); 
+*/
 
 module.exports = function (app) {
 
