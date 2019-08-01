@@ -9,11 +9,22 @@ const getIssues = (req, res) => {
 };
 const saveIssue = (req, res) => {
   const project = req.params.project;
-  console.log(req.body)
-  /*const issue = new Issue({
-    issue_title: req.body.issue_title,
-    description: req.body.description
-  })*/
+  const { issue_title, issue_text, created_by, assigned_to, status_text } = req.body;
+  console.log('sta', req.body);
+  const issue = new Issue({
+    issue_title,
+    issue_text,
+    created_by,
+    assigned_to,
+    status_text,
+    open: true,
+    project
+  })
+  .save()
+  .then(data => {
+    console.log('data', data);
+  })
+  .catch(err => console.log(err));
 };
 const updateIssue = () => {};
 const deleteIssue = () => {};
