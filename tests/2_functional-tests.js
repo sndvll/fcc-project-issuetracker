@@ -16,7 +16,7 @@ const Project = require('../models/models.js').Project;
 
 chai.use(chaiHttp);
 
-const createTestIssue = (title, createdBy, done) => {
+const createTestIssue = (title, done, createdBy) => {
   const issue = new Issue({
     title, text: 'test', createdBy: 'tester'
   });
@@ -149,7 +149,7 @@ suite('Functional Tests', function() {
       let issueTitle = `test, ${Date.now()}`;
       
       before(done => {
-        createTestIssue(issueTitle, (id) => { testId = id; }, done);
+        createTestIssue(issueTitle, done, (id) => { testId = id; });
       });
       
       after(done => { deleteTestIssue({ _id: testId }, done); });
@@ -160,7 +160,6 @@ suite('Functional Tests', function() {
           .send({ _id: testId })
           .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.fail();
             assert.property(res.body, 'message');
             assert.equal(res.body.message, 'not updated');
             done();
@@ -173,7 +172,6 @@ suite('Functional Tests', function() {
           .send({ _id: testId, title: 'new_title' })
           .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.fail();
             assert.property(res.body, 'message');
             assert.equal(res.body.message, `update successful, id: ${testId}`);
             done();
@@ -183,10 +181,9 @@ suite('Functional Tests', function() {
       test('Multiple fields to update', function(done) {
         chai.request(server)        
           .put('/api/issues/test')
-          .send({ _id: testId, title: 'new_title' })
+          .send({ _id: testId, title: 'new_title', text: 'new_text' })
           .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.fail();
             assert.property(res.body, 'message');
             assert.equal(res.body.message, `update successful, id: ${testId}`);
             done();
@@ -196,6 +193,12 @@ suite('Functional Tests', function() {
     });
     
     suite('GET /api/issues/{project} => Array of objects with issue data', function() {
+      
+      let issueTitle = `test, ${Date.now()}`;
+      
+      before(done => { createTestIssue(issueTitle, done); });
+      
+      after(done => { deleteTestIssue({ title: issueTitle}, done)});
       
       test('No filter', function(done) {
         chai.request(server)
@@ -216,6 +219,8 @@ suite('Functional Tests', function() {
           done();
         });
       });
+      
+      
       
       test('One filter', function(done) {
         
