@@ -16,15 +16,70 @@ const Project = require('../models/models.js').Project;
 
 chai.use(chaiHttp);
 
-const createTestIssue = (done, title, createdBy) => {
-  const Issue = new Issue({
-    title, text:
-  })
+const createTestIssue = (title, createdBy, done) => {
+  const issue = new Issue({
+    title, text: 'test', createdBy: 'tester'
+  });
+  issue.save()
+    .then(res => {
+      console.log(`test issue created: ${res.title}`);
+      if(createdBy) {
+        createdBy(res._id);
+      }
+      done();
+    })
+    .catch(err => {
+      console.log('error', err);
+      done();
+    });
+}
+
+const deleteTestIssue = (filter, done) => {
+  const key = Object.keys(filter)[0];
+  Issue.findOneAndDelete(filter)
+    .then(res => {
+      console.log(`test issue deleted: ${res[key]}`);
+      done();
+    })
+    .catch(err => {
+      console.log('error', err);
+      done();
+    });
+}
+
+const createTestProject = (projectName, done) => {
+  const project = new Project({
+    projectName
+  });
+  project.save()
+    .then(res => {
+      console.log(`test project created: ${res.projectName}`);
+      done();
+    })
+    .catch(err => {
+      console.log('error', err);
+      done();
+    });
+}
+
+const deleteTestProject= (filter, done) => {
+  const key = Object.keys(filter)[0];
+  Project.findOneAndDelete(filter)
+    .then(res => {
+      console.log(`test project deleted: ${res[key]}`);
+      done();
+    })
+    .catch(err => {
+      console.log('error', err);
+      done();
+    });
 }
 
 suite('Functional Tests', function() {
   
     suite('POST /api/issues/{project} => object with issue data', function() {
+      
+      let issueTitle
       
       test('Every field filled in', function(done) {
        chai.request(server)

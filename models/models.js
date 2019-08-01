@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const model = mongoose.model;
-
 const ProjectSchema = new Schema({
   projectName: {
     type: String,
@@ -45,5 +44,9 @@ const IssueSchema = new Schema({
   }
 });
 
-export const Project = model('Project', ProjectSchema);
-export const Issue = model('Issue', IssueSchema);
+
+
+module.exports = {
+  Project: model('Project', ProjectSchema),
+  Issue: model('Issue', IssueSchema)
+}
