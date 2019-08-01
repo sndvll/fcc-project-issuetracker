@@ -208,19 +208,30 @@ suite('Functional Tests', function() {
             done();
           });
       });
-      
     });
     
     suite('DELETE /api/issues/{project} => text', function() {
       
       test('No _id', function(done) {
-        
+        chai.request(server)
+          .delete('/api/issues/test')
+          .send({ })
+          .end(function(err, res){
+            assert.equal(res.status, 200);
+            assert.equal(res.text, '_id error');
+            done();
+          });
       });
       
       test('Valid _id', function(done) {
-        
+        chai.request(server)
+          .delete('/api/issues/test')
+          .send({ _id: id })
+          .end(function(err, res){
+            assert.equal(res.status, 200);
+            assert.equal(res.text, `deleted ${id}`);
+            done();
+          });
       });
-      
     });
-
 });
