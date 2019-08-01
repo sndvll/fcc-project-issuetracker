@@ -36,7 +36,7 @@ suite('Functional Tests', function() {
           if(err) console.log(err);
           assert.equal(res.status, 200);
           assert.equal(res.body.issue_title, 'Title');
-          assert.equal(res.body.created_by, 'Functional Test - Every field filled in');
+          assert.equal(res.body.created_by, 'Test - Every field filled in');
           assert.equal(res.body.assigned_to, 'Chai and Mocha');
           assert.equal(res.body.status_text, 'In QA');
           assert.property(res.body, 'created_on');
@@ -60,7 +60,7 @@ suite('Functional Tests', function() {
             if(err) console.log(err);
             assert.equal(res.body.issue_title, 'Title');
             assert.equal(res.body.issue_text, 'text');
-            assert.equal(res.body.createdBy, 'Functional Test - Required fields filled in');
+            assert.equal(res.body.createdBy, 'Test - Required fields filled in');
             assert.equal(res.body.assignedTo, '');
             assert.equal(res.body.status_text, '');
             assert.property(res.body, 'created_on');

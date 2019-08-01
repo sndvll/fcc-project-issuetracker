@@ -26,6 +26,7 @@ app.use(helmet({
   xssFilter: true
 }));
 
+mongoose.set('useFindAndModify', false);
 mongoose.connect(process.env.DB_URI +'/test?retryWrites=true&w=majority', { useNewUrlParser: true })
   .then(() => console.log('Database connected'))
   .catch(err => console.log(err));

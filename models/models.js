@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 const ProjectSchema = new Schema({
-  projectName: {
+  project_name: {
     type: String,
     required: true,
     min: 1,

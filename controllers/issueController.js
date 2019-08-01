@@ -1,16 +1,15 @@
-const Issue = require('../models/models.js').Issue;
+const Issue   = require('../models/models.js').Issue;
+const Project = require('../models/models.js').Project;
 
 const getIssues = (req, res) => {
   Issue.find({project: req.params.project}, (err, data) => {
     if(err) console.log(err);
     else res.json(data);
-    console.log(data);
   });
 };
 const saveIssue = (req, res) => {
   const project = req.params.project;
   const { issue_title, issue_text, created_by, assigned_to, status_text } = req.body;
-  console.log('sta', req.body);
   const issue = new Issue({
     issue_title,
     issue_text,
@@ -22,9 +21,14 @@ const saveIssue = (req, res) => {
   })
   .save()
   .then(data => {
-    console.log('data', data);
+    Project.findOneAndUpdate({project: project}, { $push: {issues: data._id}})
+      .then(() => {
+        console.log('data', data);
+        res.json(data);
+      })
+      .catch(err => console.log('findOneAndUpdate Error: ' + err));
   })
-  .catch(err => console.log(err));
+  .catch(err => console.log('save Issue error: ' + err));
 };
 const updateIssue = () => {};
 const deleteIssue = () => {};
@@ -35,3 +39,4 @@ module.exports = {
   update: updateIssue,
   delete: deleteIssue
 }
+
