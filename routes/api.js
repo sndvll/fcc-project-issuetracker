@@ -14,36 +14,14 @@ const ObjectId = require('mongodb').ObjectID;
 
 const CONNECTION_STRING = process.env.DB;
 
-const issueController = require('../controllers/issueController.js');
-
-/*
-MongoClient.connect(CONNECTION_STRING, function(err, db) {
-  console.log('db connection successful');
-}); 
-*/
+const issues = require('../controllers/issueController.js');
 
 module.exports = function (app) {
 
   app.route('/api/issues/:project')
-  
-    .get(issueController.get, function (req, res){
-      var project = req.params.project;
-      console.log('project: ', project);
-    })
-    
-    .post(function (req, res){
-      var project = req.params.project;
-      
-    })
-    
-    .put(function (req, res){
-      var project = req.params.project;
-      
-    })
-    
-    .delete(function (req, res){
-      var project = req.params.project;
-      
-    });
+    .get(issues.get)
+    .post(issues.save)
+    .put(issues.update)
+    .delete(issues.delete);
     
 };

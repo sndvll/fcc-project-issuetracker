@@ -1,13 +1,11 @@
 const Issue = require('../models/models.js').Issue;
 
-const getIssues = (req, res, next) => {
-  Issue.find({project: req.params.project})
-    .then(data => {
-      console.log(process.env.NODE_ENV === 'test' ? data : '');
-      req.body = data;
-      next();
-    })
-    .catch(err => console.log(`Error: ${err}`));
+const getIssues = (req, res) => {
+  Issue.find({project: req.params.project}, (err, data) => {
+    if(err) console.log(err);
+    else res.json(data);
+  })
+    
 };
 const saveIssue = () => {};
 const updateIssue = () => {};

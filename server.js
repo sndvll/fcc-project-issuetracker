@@ -5,6 +5,7 @@ const bodyParser  = require('body-parser');
 const expect      = require('chai').expect;
 const cors        = require('cors');
 const helmet      = require('helmet');
+const mongoose    = require('mongoose');
 
 
 const apiRoutes         = require('./routes/api.js');
@@ -24,6 +25,10 @@ app.use(helmet({
   noSniff: true,
   xssFilter: true
 }));
+
+mongoose.connect(process.env.DB_URI +'/test?retryWrites=true&w=majority', { useNewUrlParser: true })
+  .then(() => console.log('Database connected'))
+  .catch(err => console.log(err));
 
 //Sample front-end
 app.route('/:project/')
