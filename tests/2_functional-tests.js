@@ -145,17 +145,52 @@ suite('Functional Tests', function() {
     });
     
     suite('PUT /api/issues/{project} => text', function() {
+      let testId;
+      let issueTitle = `test, ${Date.now()}`;
       
+      before(done => {
+        createTestIssue(issueTitle, (id) => { testId = id; }, done);
+      });
+      
+      after(done => { deleteTestIssue({ _id: testId }, done); });
+
       test('No body', function(done) {
-        
+        chai.request(server)        
+          .put('/api/issues/test')
+          .send({ _id: testId })
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.fail();
+            assert.property(res.body, 'message');
+            assert.equal(res.body.message, 'not updated');
+            done();
+          });
       });
       
       test('One field to update', function(done) {
-        
+        chai.request(server)        
+          .put('/api/issues/test')
+          .send({ _id: testId, title: 'new_title' })
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.fail();
+            assert.property(res.body, 'message');
+            assert.equal(res.body.message, `update successful, id: ${testId}`);
+            done();
+          });
       });
       
       test('Multiple fields to update', function(done) {
-        
+        chai.request(server)        
+          .put('/api/issues/test')
+          .send({ _id: testId, title: 'new_title' })
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.fail();
+            assert.property(res.body, 'message');
+            assert.equal(res.body.message, `update successful, id: ${testId}`);
+            done();
+          });
       });
       
     });
