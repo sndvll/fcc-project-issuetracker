@@ -6,12 +6,21 @@
 *       (if additional are added, keep them at the very end!)
 */
 
-var chaiHttp = require('chai-http');
-var chai = require('chai');
-var assert = chai.assert;
-var server = require('../server');
+const chaiHttp = require('chai-http');
+const chai = require('chai');
+const assert = chai.assert;
+const server = require('../server');
+
+const Issue = require('../models/models.js').Issue;
+const Project = require('../models/models.js').Project;
 
 chai.use(chaiHttp);
+
+const createTestIssue = (done, title, createdBy) => {
+  const Issue = new Issue({
+    title, text:
+  })
+}
 
 suite('Functional Tests', function() {
   

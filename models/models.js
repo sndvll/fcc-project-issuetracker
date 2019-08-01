@@ -26,17 +26,24 @@ const IssueSchema = new Schema({
     type: String, required: true, min: 1, max: 30
   },
   assignedTo: {
-    
+    type: String, default: '', min: 1, max: 30
   },
-  status: {},
-  createdOn: {},
-  updatedOn: {},
-  open: {},
-  project: {}
+  status: {
+    type: String, default: '', min: 1, max: 30
+  },
+  createdOn: {
+    type: String, default: new Date()
+  },
+  updatedOn: {
+    type: String, default: new Date()
+  },
+  open: {
+    type: Boolean, default: true
+  },
+  project: {
+    type: String, required: true
+  }
 });
 
-
-
-module.exports = {
-  Project: model('Project', ProjectSchema)
-}
+export const Project = model('Project', ProjectSchema);
+export const Issue = model('Issue', IssueSchema);
