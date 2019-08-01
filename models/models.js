@@ -25,7 +25,7 @@ const IssueSchema = new Schema({
     type: String, default: '', min: 1, max: 30
   },
   issue_text: {
-    type: String, default: '', min: 1, max: 300
+    type: String, required: true, min: 1, max: 300
   },
   status_text: {
     type: String, default: '', min: 1, max: 200

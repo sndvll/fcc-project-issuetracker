@@ -1,7 +1,6 @@
 const Issue   = require('../models/models.js').Issue;
 const Project = require('../models/models.js').Project;
 
-const catchUndi
 
 const getIssues = (req, res) => {
   Issue.find({project: req.params.project}, (err, data) => {
@@ -27,11 +26,18 @@ const saveIssue = (req, res) => {
       .then(() => {
         res.json(data);
       })
-      .catch(err => console.log('findOneAndUpdate Error: ' + err));
+      .catch(err => {
+        if (process.env.NODE_ENV === 'test') console.log('findOneAndUpdate Error: ' + err)
+      });
   })
-  .catch(err => console.log('save Issue error: ' + err));
+  .catch(err => {
+    if(process.env.NODE_ENV === 'test') console.log('save Issue error: ' + err);
+    res.json({ message: 'missing inputs' });
+  });
 };
-const updateIssue = () => {};
+const updateIssue = () => {
+  const {id, request} = req.body;
+};
 const deleteIssue = () => {};
 
 module.exports = {

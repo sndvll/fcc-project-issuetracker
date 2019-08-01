@@ -82,7 +82,7 @@ suite('Functional Tests', function() {
             if(err) console.log(err);
             assert.equal(res.status, 200);
             assert.property(res.body, 'message');
-            assert.property(res.body.message, 'missing inputs');
+            assert.equal(res.body.message, 'missing inputs');
             done();
           });
       });
