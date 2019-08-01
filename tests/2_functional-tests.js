@@ -28,11 +28,12 @@ suite('Functional Tests', function() {
         .send({
           title: 'Title',
           text: 'text',
-          createdBy: 'Functional Test - Every field filled in',
+          createdBy: 'Test - Every field filled in',
           assignedTo: 'Chai and Mocha',
           status: 'In QA'
         })
         .end(function(err, res){
+          if(err) console.log(err);
           assert.equal(res.status, 200);
           assert.equal(res.body.issue_title, 'Title');
           assert.equal(res.body.created_by, 'Functional Test - Every field filled in');
@@ -51,20 +52,24 @@ suite('Functional Tests', function() {
         chai.request(server)
           .post('/api/issues/test')
           .send({
-            title: issueTitle,
-            text: 'text',
-            createdBy: 'Functional Test - Required fields filled in'
+            issue_title: 'Title',
+            issue_text: 'text',
+            created_by: 'Test - Required fields filled in',
           })
           .end(function(err, res) {
-            assert.equal(res.body.title, issueTitle);
-            assert.equal(res.body.text, 'text');
+            if(err) console.log(err);
+            assert.equal(res.body.issue_title, 'Title');
+            assert.equal(res.body.issue_text, 'text');
             assert.equal(res.body.createdBy, 'Functional Test - Required fields filled in');
             assert.equal(res.body.assignedTo, '');
+            assert.equal(res.body.status_text, '');
+            assert.property(res.body, 'created_on');
+            assert.property(res.body, 'updated_on');
             assert.equal(res.body.status, '');
             assert.equal(res.body.open, true);
+            assert.property(res.body, '_id');
             done();
           });
-        
       });
       
       test('Missing required fields', function(done) {
@@ -72,33 +77,26 @@ suite('Functional Tests', function() {
           .post('/api/issues/test')
           .send({
             title: issueTitle,
-            created_by: 'Functional Test - Missing required fields'
+            created_by: 'Test - Missing required fields'
           })
           .end(function(err, res) {
+            if(err) console.log(err);
             assert.equal(res.status, 200);
             assert.property(res.body, 'message');
-            assert.propertyVal(res.body, 'message', 'missing required fields');
+            assert.property(res.body.message, 'missing inputs');
             done();
           });
       });
-      
     });
     
     suite('PUT /api/issues/{project} => text', function() {
-      let testId;
-      let issueTitle = `test, ${Date.now()}`;
-      
-      before(done => {
-        createTestIssue(issueTitle, done, (id) => { testId = id; });
-      });
-      
-      after(done => { deleteTestIssue({ _id: testId }, done); });
 
       test('No body', function(done) {
         chai.request(server)        
           .put('/api/issues/test')
-          .send({ _id: testId })
+          .send({})
           .end(function(err, res) {
+            if(err) console.log(err);
             assert.equal(res.status, 200);
             assert.property(res.body, 'message');
             assert.equal(res.body.message, 'not updated');
@@ -109,11 +107,15 @@ suite('Functional Tests', function() {
       test('One field to update', function(done) {
         chai.request(server)        
           .put('/api/issues/test')
-          .send({ _id: testId, title: 'new_title' })
+          .send({ 
+            _id: id,
+            created_by: 'Test - One field to update'
+          })
           .end(function(err, res) {
+            if(err) console.log(err);
             assert.equal(res.status, 200);
             assert.property(res.body, 'message');
-            assert.equal(res.body.message, `update successful, id: ${testId}`);
+            assert.equal(res.body.message, `update successful`);
             done();
           });
       });
@@ -121,30 +123,30 @@ suite('Functional Tests', function() {
       test('Multiple fields to update', function(done) {
         chai.request(server)        
           .put('/api/issues/test')
-          .send({ _id: testId, title: 'new_title', text: 'new_text' })
+          .send({
+            _id: id,
+            created_by: 'Test - Multiple fields to update',
+            issue_title: 'Issue Title',
+            open: false
+          })
           .end(function(err, res) {
+            if(err) console.log(err);
             assert.equal(res.status, 200);
             assert.property(res.body, 'message');
             assert.equal(res.body.message, `update successful, id: ${testId}`);
             done();
           });
       });
-      
     });
     
     suite('GET /api/issues/{project} => Array of objects with issue data', function() {
-      
-      let issueTitle = `test, ${Date.now()}`;
-      
-      before(done => { createTestIssue(issueTitle, done); });
-      
-      after(done => { deleteTestIssue({ title: issueTitle}, done)});
       
       test('No filter', function(done) {
         chai.request(server)
         .get('/api/issues/test')
         .query({})
         .end(function(err, res){
+          if(err) console.log(err);
           assert.equal(res.status, 200);
           assert.isArray(res.body);
           assert.property(res.body[0], 'issue_title');
@@ -160,14 +162,51 @@ suite('Functional Tests', function() {
         });
       });
       
-      
-      
       test('One filter', function(done) {
-        
+        chai.request(server)
+        .get('/api/issues/test')
+        .query({
+          issue_title: 'Title'
+        })
+        .end(function(err, res){
+          assert.equal(res.status, 200);
+          assert.isArray(res.body);
+          assert.equal(res.body.length, 1);
+          assert.property(res.body[0], 'issue_title');
+          assert.property(res.body[0], 'issue_text');
+          assert.property(res.body[0], 'created_on');
+          assert.property(res.body[0], 'updated_on');
+          assert.property(res.body[0], 'created_by');
+          assert.property(res.body[0], 'assigned_to');
+          assert.property(res.body[0], 'open');
+          assert.property(res.body[0], 'status_text');
+          assert.property(res.body[0], '_id');
+          done();
+        });
       });
       
       test('Multiple filters (test for multiple fields you know will be in the db for a return)', function(done) {
-        
+        chai.request(server)
+          .get('/api/issues/test')
+          .query({
+            issue_title: 'Issue Title',
+            open: false
+          })
+          .end(function(err, res){
+            assert.equal(res.status, 200);
+            assert.isArray(res.body);
+            assert.equal(res.body.length, 1);
+            assert.property(res.body[0], 'issue_title');
+            assert.property(res.body[0], 'issue_text');
+            assert.property(res.body[0], 'created_on');
+            assert.property(res.body[0], 'updated_on');
+            assert.property(res.body[0], 'created_by');
+            assert.property(res.body[0], 'assigned_to');
+            assert.property(res.body[0], 'open');
+            assert.property(res.body[0], 'status_text');
+            assert.property(res.body[0], '_id');
+            done();
+          });
       });
       
     });
