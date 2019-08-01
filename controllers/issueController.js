@@ -1,6 +1,8 @@
 const Issue   = require('../models/models.js').Issue;
 const Project = require('../models/models.js').Project;
 
+const catchUndi
+
 const getIssues = (req, res) => {
   Issue.find({project: req.params.project}, (err, data) => {
     if(err) console.log(err);
@@ -23,7 +25,6 @@ const saveIssue = (req, res) => {
   .then(data => {
     Project.findOneAndUpdate({project: project}, { $push: {issues: data._id}})
       .then(() => {
-        console.log('data', data);
         res.json(data);
       })
       .catch(err => console.log('findOneAndUpdate Error: ' + err));

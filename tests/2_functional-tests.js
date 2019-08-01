@@ -60,12 +60,11 @@ suite('Functional Tests', function() {
             if(err) console.log(err);
             assert.equal(res.body.issue_title, 'Title');
             assert.equal(res.body.issue_text, 'text');
-            assert.equal(res.body.createdBy, 'Test - Required fields filled in');
-            assert.equal(res.body.assignedTo, '');
+            assert.equal(res.body.created_by, 'Test - Required fields filled in');
+            assert.equal(res.body.assigned_to, '');
             assert.equal(res.body.status_text, '');
             assert.property(res.body, 'created_on');
             assert.property(res.body, 'updated_on');
-            assert.equal(res.body.status, '');
             assert.equal(res.body.open, true);
             assert.property(res.body, '_id');
             done();
@@ -76,7 +75,7 @@ suite('Functional Tests', function() {
         chai.request(server)
           .post('/api/issues/test')
           .send({
-            title: issueTitle,
+            issue_title: 'Title',
             created_by: 'Test - Missing required fields'
           })
           .end(function(err, res) {
