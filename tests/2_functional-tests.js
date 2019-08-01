@@ -114,7 +114,7 @@ suite('Functional Tests', function() {
             if(err) console.log(err);
             assert.equal(res.status, 200);
             assert.property(res.body, 'message');
-            assert.equal(res.body.message, `update successful`);
+            assert.equal(res.body.message, `update successful, id: ${id}`);
             done();
           });
       });
@@ -132,7 +132,7 @@ suite('Functional Tests', function() {
             if(err) console.log(err);
             assert.equal(res.status, 200);
             assert.property(res.body, 'message');
-            assert.equal(res.body.message, `update successful, id: ${testId}`);
+            assert.equal(res.body.message, `update successful, id: ${id}`);
             done();
           });
       });

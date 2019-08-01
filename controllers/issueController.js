@@ -8,6 +8,7 @@ const getIssues = (req, res) => {
     else res.json(data);
   });
 };
+
 const saveIssue = (req, res) => {
   const project = req.params.project;
   const { issue_title, issue_text, created_by, assigned_to, status_text } = req.body;
@@ -35,10 +36,11 @@ const saveIssue = (req, res) => {
     res.json({ message: 'missing inputs' });
   });
 };
+
 const updateIssue = (req, res) => {
   let updatedIssue = {};
-  const { _id } = req.body._id;
-  const fieldsForUpdate = ['issue_title', 'issue_text', 'assigned_to', 'status_text', 'open'];
+  const { _id } = req.body;
+  const fieldsForUpdate = ['issue_title', 'created_by', 'issue_text', 'assigned_to', 'status_text', 'open'];
   for (let field in req.body) {
     fieldsForUpdate.forEach(value => {
       if (value == field) {
@@ -48,17 +50,24 @@ const updateIssue = (req, res) => {
   };
   updatedIssue.updated_on = new Date();
   const hasUpdated = Object.keys(updatedIssue).length > 1;
-  
   if(hasUpdated) {
     Issue.findByIdAndUpdate(_id, updatedIssue, { new:true })
       .then(data => {
-        
-      });
+        res.json({message: `update successful, id: ${data._id}`})
+      })
+  } else {
+    res.json({ message: 'not updated' });
   }
-
-  
 };
-const deleteIssue = () => {};
+
+const deleteIssue = (req, res) => {
+  const { _id } = req.body;
+  if(_id) {
+    console.log(_id);
+  } else {
+    res.json({ message: '_id error'})
+  }
+};
 
 module.exports = {
   get: getIssues,
