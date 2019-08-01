@@ -8,7 +8,12 @@ const getIssues = (req, res) => {
   });
 };
 const saveIssue = (req, res) => {
+  const project = req.params.project;
   console.log(req.body)
+  /*const issue = new Issue({
+    issue_title: req.body.issue_title,
+    description: req.body.description
+  })*/
 };
 const updateIssue = () => {};
 const deleteIssue = () => {};

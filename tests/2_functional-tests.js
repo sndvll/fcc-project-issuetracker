@@ -26,11 +26,11 @@ suite('Functional Tests', function() {
        chai.request(server)
         .post('/api/issues/test')
         .send({
-          title: 'Title',
-          text: 'text',
-          createdBy: 'Test - Every field filled in',
-          assignedTo: 'Chai and Mocha',
-          status: 'In QA'
+          issue_title: 'Title',
+          issue_text: 'text',
+          created_by: 'Test - Every field filled in',
+          assigned_to: 'Chai and Mocha',
+          status_text: 'In QA'
         })
         .end(function(err, res){
           if(err) console.log(err);
