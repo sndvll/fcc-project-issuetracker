@@ -16,7 +16,7 @@ const Project = require('../models/models.js').Project;
 
 chai.use(chaiHttp);
 
-let id;
+let id, id2;
 
 suite('Functional Tests', function() {
   
@@ -67,6 +67,7 @@ suite('Functional Tests', function() {
             assert.property(res.body, 'updated_on');
             assert.equal(res.body.open, true);
             assert.property(res.body, '_id');
+            id2 = res.body._id;
             done();
           });
       });
@@ -217,7 +218,8 @@ suite('Functional Tests', function() {
           .send({ })
           .end(function(err, res){
             assert.equal(res.status, 200);
-            assert.equal(res.text, '_id error');
+            assert.property(res.body, 'message');
+            assert.equal(res.body.message, '_id error');
             done();
           });
       });
@@ -228,7 +230,12 @@ suite('Functional Tests', function() {
           .send({ _id: id })
           .end(function(err, res){
             assert.equal(res.status, 200);
-            assert.equal(res.text, `deleted ${id}`);
+            assert.property(res.body, 'message');
+            assert.equal(res.body.message, `deleted ${id}`);
+            chai.request(server)
+          .delete('/api/issues/test')
+          .send({ _id: id })
+          .end(function(err, res){
             done();
           });
       });

@@ -64,6 +64,13 @@ const deleteIssue = (req, res) => {
   const { _id } = req.body;
   if(_id) {
     console.log(_id);
+    Issue.findByIdAndDelete(_id)
+      .then(() => {
+        res.json({ message: `deleted ${_id}`})
+      })
+      .catch(err => {
+        res.json({ message: `could not delete ${_id}`})
+      })
   } else {
     res.json({ message: '_id error'})
   }
